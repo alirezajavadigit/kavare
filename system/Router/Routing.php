@@ -1,7 +1,7 @@
 <?php
 
 namespace System\Router;
-
+use ReflectionMethod;
 class Routing
 {
     private $current_route;
@@ -25,6 +25,19 @@ class Routing
         $classPath = str_replace("\\", "/", $match['class']);
         $path = BASE_DIR . "/App/Http/Controllers/$classPath.php";
         if(!file_exists($path)){
+            $this->error404();
+        }
+
+        $class = "\App\Http\Controllers\\" . $match['class'];
+        $object = new $class();
+        $method = $match['method'];
+        if(method_exists($object, $method)){
+            $reflection = new ReflectionMethod($class, $method);
+            $parameterCount = $reflection->getNumberOfParameters();
+            if($parameterCount <= count($this->values)){
+                call_user_func_array([$object, $method], $this->values);
+            }
+        }else{
             $this->error404();
         }
     }
