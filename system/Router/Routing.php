@@ -16,22 +16,35 @@ class Routing
         global $routes;
         $this->routes = $routes;
     }
+    public function run()
+    {
+    }
+    public function match()
+    {
+    }
 
-    private function methodField()
+    private function compare(){
+
+    }
+
+    public function error404(){
+        http_response_code(404);
+        include __DIR__ . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "404.php";
+        exit;
+    }
+
+    public function methodField()
     {
         $method_field = strtolower($_SERVER['REQUEST_METHOD']);
         if ($method_field == "post") {
-            if(isset($_POST['_method'])) {
-                if($_POST['_method'] == "put") {
+            if (isset($_POST['_method'])) {
+                if ($_POST['_method'] == "put") {
                     $method_field = "put";
-                }elseif($_POST['_method'] == "delete") {
+                } elseif ($_POST['_method'] == "delete") {
                     $method_field = "delete";
                 }
             }
         }
         return $method_field;
-    }
-    public function run()
-    {
     }
 }
