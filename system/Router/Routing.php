@@ -21,10 +21,32 @@ class Routing
     }
     public function match()
     {
+
     }
 
-    private function compare(){
+    private function compare($reservedRouteUrl){
+        // part 1
+        if(trim($reservedRouteUrl, "/") === ""){
+            return trim($this->current_route[0], "/") === "" ? true : false;
+        }
 
+        // part 2
+        $reservedRouteUrlArray = explode("/", $reservedRouteUrl);
+        if(sizeof($this->current_route) != sizeof($reservedRouteUrlArray)){
+            return false;
+        }
+
+        // part 3
+        foreach($this->current_route as $key =>$currentRouteElement){
+            $reservedRouteUrlElement = $reservedRouteUrlArray[$key];
+            if(substr($reservedRouteUrlElement, 0, 1) == "{" && substr($reservedRouteUrlElement, -1) == "}"){
+                array_push($this->values, $currentRouteElement);
+            }
+            elseif($reservedRouteUrlElement != $currentRouteElement){
+                return false;
+            }
+        }
+        return true;
     }
 
     public function error404(){
