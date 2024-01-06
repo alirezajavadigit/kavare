@@ -21,7 +21,15 @@ class Routing
     }
     public function match()
     {
-
+        $reservedRoutes = $this->routes[$this->methodField()];
+        foreach ($reservedRoutes as $reservedRoute) {
+            if($this->compare($reservedRoute['url'] == true)){
+                return ["class" => $reservedRoute['class'], "method" => $reservedRoute['method']];
+            }else{
+                $this->values = [];
+            }
+        }
+        return [];
     }
 
     private function compare($reservedRouteUrl){
