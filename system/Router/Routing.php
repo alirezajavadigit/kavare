@@ -18,46 +18,56 @@ class Routing
     }
     public function run()
     {
+        $match = $this->match();
+        if(empty($match)){
+            $this->error404();
+        }
+        $classPath = str_replace("\\", "/", $match['class']);
+        $path = BASE_DIR . "/App/Http/Controllers/$classPath.php";
+        if(!file_exists($path)){
+            $this->error404();
+        }
     }
     public function match()
     {
         $reservedRoutes = $this->routes[$this->methodField()];
         foreach ($reservedRoutes as $reservedRoute) {
-            if($this->compare($reservedRoute['url'] == true)){
+            if ($this->compare($reservedRoute['url'] == true)) {
                 return ["class" => $reservedRoute['class'], "method" => $reservedRoute['method']];
-            }else{
+            } else {
                 $this->values = [];
             }
         }
         return [];
     }
 
-    private function compare($reservedRouteUrl){
+    private function compare($reservedRouteUrl)
+    {
         // part 1
-        if(trim($reservedRouteUrl, "/") === ""){
+        if (trim($reservedRouteUrl, "/") === "") {
             return trim($this->current_route[0], "/") === "" ? true : false;
         }
 
         // part 2
         $reservedRouteUrlArray = explode("/", $reservedRouteUrl);
-        if(sizeof($this->current_route) != sizeof($reservedRouteUrlArray)){
+        if (sizeof($this->current_route) != sizeof($reservedRouteUrlArray)) {
             return false;
         }
 
         // part 3
-        foreach($this->current_route as $key =>$currentRouteElement){
+        foreach ($this->current_route as $key => $currentRouteElement) {
             $reservedRouteUrlElement = $reservedRouteUrlArray[$key];
-            if(substr($reservedRouteUrlElement, 0, 1) == "{" && substr($reservedRouteUrlElement, -1) == "}"){
+            if (substr($reservedRouteUrlElement, 0, 1) == "{" && substr($reservedRouteUrlElement, -1) == "}") {
                 array_push($this->values, $currentRouteElement);
-            }
-            elseif($reservedRouteUrlElement != $currentRouteElement){
+            } elseif ($reservedRouteUrlElement != $currentRouteElement) {
                 return false;
             }
         }
         return true;
     }
 
-    public function error404(){
+    public function error404()
+    {
         http_response_code(404);
         include __DIR__ . DIRECTORY_SEPARATOR . "View" . DIRECTORY_SEPARATOR . "404.php";
         exit;
