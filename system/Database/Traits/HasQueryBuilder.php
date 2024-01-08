@@ -63,4 +63,17 @@ trait HasQueryBuilder{
         $this->resetLimit();
         $this->removeValues();
     }
+
+    protected function executeQuery(){
+        $query = "";
+        $query .= $this->getSql();
+        if(!empty($this->where)){
+            $whereString = "";
+            foreach($this->where as $where){
+                $whereString == "" ? $whereString .= $where['condition'] : $whereString.= " ". $where['operator']. " ". $where['condition'];   
+            }
+            $query .= " WHERE ". $whereString;
+        }
+
+    }
 }
