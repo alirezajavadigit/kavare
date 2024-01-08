@@ -7,7 +7,7 @@ class Routing
     private $current_route;
     private $method_field;
     private $routes;
-    private $values;
+    private $values = [];
 
     public function __construct()
     {
@@ -20,6 +20,7 @@ class Routing
     {
         $match = $this->match();
         if(empty($match)){
+            
             $this->error404();
         }
         $classPath = str_replace("\\", "/", $match['class']);
@@ -45,7 +46,7 @@ class Routing
     {
         $reservedRoutes = $this->routes[$this->methodField()];
         foreach ($reservedRoutes as $reservedRoute) {
-            if ($this->compare($reservedRoute['url'] == true)) {
+            if ($this->compare($reservedRoute['url']) == true) {
                 return ["class" => $reservedRoute['class'], "method" => $reservedRoute['method']];
             } else {
                 $this->values = [];
