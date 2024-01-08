@@ -75,5 +75,14 @@ trait HasQueryBuilder{
             $query .= " WHERE ". $whereString;
         }
 
+        if(!empty($this->orderBy)){
+            $query .= " ORDER BY ". implode(", ", $this->orderBy);
+        }
+        if(!empty($this->limit)){
+            $query .= " limit ". $this->limit['from']. ", ". $this->limit['number'];
+        }
+        $query .= " ;";
+        echo $query . "<hr/>";
+
     }
 }
