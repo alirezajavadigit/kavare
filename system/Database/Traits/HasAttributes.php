@@ -11,6 +11,17 @@ trait HasAttributes
 
     protected function arrayToAttribute(array $array, $object = null)
     {
+        if(!$object){
+            $className = get_called_class();
+            $object = new $className;
+        }
+        foreach($array as $attribute => $value) {
+            if($this->inHiddenAttribute($attribute))
+                continue;
+
+            $this->registerAttribute($object, $attribute, $value);
+        }
+        return $object;
     }
     protected function arrayToOnjects()
     {
