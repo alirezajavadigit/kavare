@@ -111,7 +111,7 @@ trait HasQueryBuilder
     protected function getCount()
     {
         $query = "";
-        $query .= " SELECT count(*) FROM " . $this->table . " ";
+        $query .= " SELECT count(".$this->getTableName.".*) FROM " . $this->getTableName() . " ";
         if (!empty($this->where)) {
             $whereString = "";
             foreach ($this->where as $where) {
@@ -129,5 +129,13 @@ trait HasQueryBuilder
         }
 
         return $statement->fetchColumn();
+    }
+
+    protected function getTableName(){
+        return '`'. $this->table . '`';
+    }
+
+    protected function getAttributeName($attribute){
+        return ' `'. $this->teble . '`.`'.$attribute.'` ';
     }
 }
