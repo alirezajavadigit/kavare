@@ -23,15 +23,24 @@ trait HasAttributes
         }
         return $object;
     }
-    protected function arrayToOnjects()
+    protected function arrayToOnjects(array $array)
     {
+        $collection = [];
+        foreach($array as $value){
+            $object = $this->arrayToAttribute($value);
+            array_push($collection, $object);
+        }
+
+        $this->collection = $collection;
     }
-    private function inHiddenAttribute()
+    private function inHiddenAttribute($attribute)
     {
+        return in_array($this->hidden, $attribute);
     }
 
-    private function inCasteAttribute()
+    private function inCasteAttribute($attribute)
     {
+        return in_array($this->casts, array_keys($attribute));
     }
 
     private function caseDecodeValue()
