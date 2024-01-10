@@ -6,6 +6,18 @@ use System\Database\DBConnection\DBConnection;
 
 trait HasCRUD
 {
+    protected function deleteMethod($id = null){
+        $object = $this;
+        $this->resetQuery();
+        if($id){
+            $object = $this->findMethod($id);
+            $this->resetQuery();
+        }
+        $object->setSql("DELETE FROM " . $this->getTableName());
+        $object->setWhere("AND", $this->getAttributeName($this->primaryKey) . " = ?");
+        $object->addValue($object->primaryKey, $object->{$object->primartyKey});
+        return $object->executeQuery();
+    }
 
     protected function saveMethod()
     {
