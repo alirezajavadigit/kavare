@@ -6,10 +6,11 @@ use System\Database\DBConnection\DBConnection;
 
 trait HasCRUD
 {
-    protected function deleteMethod($id = null){
+    protected function deleteMethod($id = null)
+    {
         $object = $this;
         $this->resetQuery();
-        if($id){
+        if ($id) {
             $object = $this->findMethod($id);
             $this->resetQuery();
         }
@@ -17,6 +18,18 @@ trait HasCRUD
         $object->setWhere("AND", $this->getAttributeName($this->primaryKey) . " = ?");
         $object->addValue($object->primaryKey, $object->{$object->primartyKey});
         return $object->executeQuery();
+    }
+
+    protected function allMethod()
+    {
+        $this->setSql("SELECT * FROM " . $this->getTableName());
+        $statement = $this->executeQuery();
+        $data = $statement->fetchAll();
+        if ($data) {
+            $this->arrayToObjects($data);
+            return $this->collection;
+        }
+        return [];
     }
 
     protected function saveMethod()
@@ -36,7 +49,7 @@ trait HasCRUD
             $defaultVars = get_class_vars(get_called_class());
             $allVars = get_object_vars($object);
             $differentVars = array_diff(array_keys($allVars), array_keys($defaultVars));
-            foreach($differentVars as $attribute){
+            foreach ($differentVars as $attribute) {
                 $this->inCastsAttributes($attribute) == true ? $this->registerAttribute($this, $attribute, $this->castEncodeValue($attribute, $object->$attribute)) : $this->registerAttribute($this, $attribute, $object->$attribute);
             }
         }
