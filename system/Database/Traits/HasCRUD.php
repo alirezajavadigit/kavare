@@ -123,6 +123,29 @@ trait HasCRUD
         return $this;
     }
 
+    protected function getMethod($array = [])
+    {
+        if ($this->sql == "") {
+            if (empty($array)) {
+                $fields = $this->getTableName() . ".*";
+            } else {
+                foreach ($array as $key => $field) {
+                    $array[$key] = $this->getAttributeName($field);
+                }
+                $fields = implode(", ", $array);
+            }
+            $this->setSql("SELECT $fields FROM " . $this->getTableName());
+        }
+        $object = $this;
+        $statement = $this->executeQuery();
+        $data = $statement->fetchAll();
+        if ($data) {
+            $this->arrayToObjects($data);
+            return $this->collection;
+        }
+        return [];
+    }
+
     protected function saveMethod()
     {
         $fillString = $this->fill();
