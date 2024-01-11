@@ -32,6 +32,20 @@ trait HasCRUD
         return [];
     }
 
+    protected function findMethod($id){
+        $this->setSql("SELECT * FROM ". $this->getTableName());
+        $this->setWhere("AND", $this->getAttributeName($this->primaryKey). " =?");
+        $this->addValue($this->primaryKey, $id);
+        $statement = $this->executeQuery();
+        $this->setAllowedMethods(['update', 'delete', 'save']);
+
+        $data = $statement->fetch();
+        if ($data) {
+            return $this->arrayToAttributes($data);
+        }
+        return null;
+    }
+
     protected function saveMethod()
     {
         $fillString = $this->fill();
