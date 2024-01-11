@@ -110,6 +110,19 @@ trait HasCRUD
         }
     }
 
+    protected function orderByMethod($attribute, $expression)
+    {
+        $this->setOrderBy($attribute, $expression);
+        $this->setAllowedMethods(['limit', 'orderBy', 'get', 'paginate']);
+        return $this;
+    }
+    protected function limitMethod($from, $number)
+    {
+        $this->setLimit($from, $number);
+        $this->setAllowedMethods(['limit', 'get', 'paginate']);
+        return $this;
+    }
+
     protected function saveMethod()
     {
         $fillString = $this->fill();
