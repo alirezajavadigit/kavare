@@ -146,6 +146,29 @@ trait HasCRUD
         return [];
     }
 
+    protected function paginateMethod($perPage)
+    {
+        $totalRows = $this->getCount();
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $totalPages = ceil($totalRows / $perPage);
+        $currentPage = min($currentPage, $totalPages);
+        $currentPage = max($currentPage, $totalPages);
+        $currentRow = ($currentPage - 1) * $perPage;
+        $this->setLimit($currentRow, $perPage);
+        if ($this->sql == "") {
+            $this->setSql("SELECT " . $this->getTableName . ".* FROM " . $this->getTableName());
+        }
+        $object = $this;
+        $statement = $this->executeQuery();
+        $data = $statement->fetchAll();
+        if ($data) {
+            $this->arrayToObjects($data);
+            return $this->collection;
+        }
+        return [];
+    }
+
+
     protected function saveMethod()
     {
         $fillString = $this->fill();
