@@ -12,11 +12,11 @@ trait HasMethodCaller
         return $this->methodCaller($this, $method, $args);
     }
 
-    public function callStatic($method, $args)
+    public static function __callStatic($method, $args)
     {
         $className = get_called_class();
         $instance = new $className;
-        return $this->methodCaller($instance, $method, $args);
+        return $instance->methodCaller($instance, $method, $args);
     }
 
     protected function setAllowedMethods($array)
