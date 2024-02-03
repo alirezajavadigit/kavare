@@ -1,7 +1,6 @@
 <?php
 
 namespace System\Database\Traits;
-// dd('HasSoftDelete');
 
 trait HasSoftDelete
 {
@@ -53,7 +52,7 @@ trait HasSoftDelete
 
     protected function getMethod($array = [])
     {
-        if ($this->getSql() == '') {
+        if ($this->sql == '') {
             if (empty($array)) {
                 $fields = $this->getTableName() . '.*';
             } else {
@@ -85,7 +84,7 @@ trait HasSoftDelete
         $currentPage = max($currentPage, 1);
         $currentRow = ($currentPage - 1) * $perPage;
         $this->setLimit($currentRow, $perPage);
-        if ($this->getSql() == '') {
+        if ($this->sql == '') {
             $this->setSql("SELECT " . $this->getTableName() . ".* FROM " . $this->getTableName());
         }
         $statement = $this->executeQuery();
