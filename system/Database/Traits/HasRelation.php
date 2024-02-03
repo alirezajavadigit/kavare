@@ -44,4 +44,26 @@ trait HasRelation
         $this->addValue($otherKey, $otherKeyValue);
         return $this;
     }
+
+    protected function belongsTo($model, $foreignKey, $localKey)
+    {
+        if ($this->{$this->primaryKey}) {
+            $modelObject = new $model();
+            return $modelObject->getBelongsToRelation($this->table, $foreignKey, $localKey, $this->$foreignKey);
+        }
+    }
+
+    public function getBelongsToRelation($table, $foreignKey, $otherKey, $foreignKeyValue)
+    {
+        // sql = 'SELECT posts.* FROM categories JOIN posts ON categories.id = posts.cat_id'
+        $this->setSql("SELECT `b`.* FROM `{$table}` AS `a` JOIN " . $this->getTableName() . " AS `b` on `a`.`{$foreignKey}` = `b`.`{$otherKey}` ");
+        $this->setWhere('AND', "`a`.`$foreignKey` = ? ");
+        $this->table = 'b';
+        $this->addValue($foreignKey, $foreignKeyValue);
+        $statement = $this->executeQuery();
+        $data = $statement->fetch();
+        if ($data)
+            return $this->arrayToAttributes($data);
+        return null;
+    }
 }
