@@ -51,4 +51,47 @@ trait HasValidationRules
             }
         }
     }
+
+    protected function maxStr($name, $count)
+    {
+        if ($this->checkFieldExist($name)) {
+            if (strlen($this->request[$name]) >= $count && $this->checkFirstError($name)) {
+                $this->setError($name, "max length equal or lower than $count character");
+            }
+            $this->errorExist = true;
+        }
+    }
+    protected function minStr($name, $count)
+    {
+        if ($this->checkFieldExist($name)) {
+            if (strlen($this->request[$name]) <= $count && $this->checkFirstError($name)) {
+                $this->setError($name, "min length equal or upper than $count character");
+            }
+            $this->errorExist = true;
+        }
+    }
+    protected function maxNumber($name, $count)
+    {
+        if ($this->checkFieldExist($name)) {
+            if ($this->request[$name] >= $count && $this->checkFirstError($name)) {
+                $this->setError($name, "max number equal or lower than $count");
+            }
+            $this->errorExist = true;
+        }
+    }
+    protected function minNumber($name, $count)
+    {
+        if ($this->checkFieldExist($name)) {
+            if ($this->request[$name] <= $count && $this->checkFirstError($name)) {
+                $this->setError($name, "min number equal or upper than $count");
+            }
+            $this->errorExist = true;
+        }
+    }
+
+
+    protected function checkFieldExist($name)
+    {
+        return isset($this->$name);
+    }
 }
