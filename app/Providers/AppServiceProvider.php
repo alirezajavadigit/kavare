@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-class AppServiceProvider
+class AppServiceProvider extends Provider
 {
     
 
