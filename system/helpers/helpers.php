@@ -167,3 +167,66 @@ function route($name, $params = [])
     }
     return currentDomain() . "/" . trim($route, " /");
 }
+
+
+function getToken($length)
+{
+    function crypto_rand_secure($min, $max)
+    {
+        $range = $max - $min;
+        if ($range < 1)
+            return $min;
+        $log = ceil(log($range, 2));
+        $bytes = (int) ($log / 8) + 1;
+        $bits = (int) $log + 1;
+        $filter = (int) (1 << $bits) - 1;
+        do {
+            $rnd = hexdec(bin2hex(openssl_random_pseudo_bytes($bytes)));
+            $rnd = $rnd & $filter;
+        } while ($rnd > $range);
+        return $min + $rnd;
+    }
+    $token = "";
+    $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    $codeAlphabet .= "abcdefghijklmnopqrstuvwxyz";
+    $codeAlphabet .= "0123456789";
+    $max = strlen($codeAlphabet);
+
+    for ($i = 0; $i < $length; $i++) {
+        $token .= $codeAlphabet[crypto_rand_secure(0, $max - 1)];
+    }
+
+    return $token;
+}
+
+function methodField()
+{
+    $method_field = strtolower($_SERVER['REQUEST_METHOD']);
+    if ($method_field == 'post') {
+        if (isset($_POST['_method'])) {
+            if ($_POST['_method'] == 'put') {
+                $method_field = 'put';
+            } elseif ($_POST['_method'] == 'delete') {
+                $method_field = 'delete';
+            }
+        }
+    }
+    return $method_field;
+}
+
+function array_dot($array, $return_array = [], $return_key = '')
+{
+    foreach ($array as $key => $value) {
+        if (is_array($value)) {
+            $return_array = array_merge($return_array, array_dot($value, $return_array, $return_key . $key . "."));
+        } else {
+            $return_array[$return_key . $key] = $value;
+        }
+    }
+    return $return_array;
+}
+
+function currentUrl()
+{
+    return currentDomain() . $_SERVER['REQUEST_URI'];
+}
