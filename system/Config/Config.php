@@ -52,6 +52,7 @@ class Config
                 $return_array[$return_key . $key] = $value;
             }
         }
+        return $return_array;
     }
     public static function get($key)
     {
