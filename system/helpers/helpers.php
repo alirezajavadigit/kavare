@@ -33,3 +33,71 @@ function old($name)
         return null;
     }
 }
+
+function flash($name, $message = null)
+{
+    if (empty($message)) {
+        if (isset($_SESSION['temporary_flash'][$name])) {
+            $temporary = $_SESSION['temporary_flash'][$name];
+            unset($_SESSION['temporary_flash'][$name]);
+            return $temporary;
+        } else {
+            return false;
+        }
+    } else {
+        $_SESSION['flash'][$name] = $message;
+    }
+}
+
+
+function flashExists($name)
+{
+    return isset($_SESSION['temporary_flash'][$name]) === true ? true : false;
+}
+
+function allFlashes()
+{
+    if (empty($message)) {
+        if (isset($_SESSION['temporary_flash'])) {
+            $temporary = $_SESSION['temporary_flash'];
+            unset($_SESSION['temporary_flash']);
+            return $temporary;
+        } else {
+            return false;
+        }
+    }
+}
+
+function error($name, $message = null)
+{
+    if (empty($message)) {
+        if (isset($_SESSION['temporary_errorFlash'][$name])) {
+            $temporary = $_SESSION['temporary_errorFlash'][$name];
+            unset($_SESSION['temporary_errorFlash'][$name]);
+            return $temporary;
+        } else {
+            return false;
+        }
+    } else {
+        $_SESSION['errorFlash'][$name] = $message;
+    }
+}
+
+
+function errorExists($name)
+{
+    return isset($_SESSION['temporary_errorFlash'][$name]) === true ? true : false;
+}
+
+function allErrors()
+{
+    if (empty($message)) {
+        if (isset($_SESSION['temporary_errorFlash'])) {
+            $temporary = $_SESSION['temporary_errorFlash'];
+            unset($_SESSION['temporary_errorFlash']);
+            return $temporary;
+        } else {
+            return false;
+        }
+    }
+}
