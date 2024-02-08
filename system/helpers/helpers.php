@@ -101,3 +101,34 @@ function allErrors()
         }
     }
 }
+
+function currentDomain()
+{
+    $httpsProtocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https://' : 'http://';
+    $currentUrl = $_SERVER['HTTP_HOST'];
+    return $httpsProtocol . $currentUrl;
+}
+
+function redirect($url)
+{
+    $url = trim($url, '/ ');
+    $url = strpos($url, currentDomain()) === 0 ? $url : currentDomain() . "/" . $url;
+    header("Location: " . $url);
+    exit;
+}
+
+function back()
+{
+    $http_refere = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : null;
+    redirect($http_refere);
+}
+
+function asset($src)
+{
+    return currentDomain() . ("/" . trim($src, "/ "));
+}
+
+function url($url)
+{
+    return currentDomain() . ("/" . trim($url, "/ "));
+}
